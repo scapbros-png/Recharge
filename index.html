@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhonePe - Mobile Recharge</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="header-left">
+                <button class="hamburger-btn">
+                    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" class="hamburger-icon" height="19" width="19" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"></path>
+                    </svg>
+                </button>
+                <div class="logo">
+                    <img src="image/phone.png" alt="PhonePe Logo" class="logo-image">
+                </div>
+                <div class="header-right">
+                    <button class="profile-btn">
+                        <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" class="profile-icon" height="25" width="25" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"></path>
+                        </svg>
+                    </button>
+                </div>
+        </div>
+    </header>
+
+    <!-- Promotional Banners Carousel -->
+    <section class="banners-carousel">
+        <div class="carousel-container">
+            <div class="carousel-slides">
+                <!-- Slide 1: Mobile Recharge Plans Banner -->
+                <div class="carousel-slide active">
+                    <img src="image/1 banner.png" alt="Mobile Recharge Plans Banner" class="banner-image">
+                </div>
+
+                <!-- Slide 2: Cashback Offer Banner -->
+                <div class="carousel-slide">
+                    <img src="image/2 Banner.png" alt="Cashback Offer Banner" class="banner-image">
+                </div>
+            </div>
+            
+            <!-- Carousel Controls -->
+            <div class="carousel-controls">
+                <button class="carousel-btn prev-btn" onclick="changeSlide(-1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="carousel-btn next-btn" onclick="changeSlide(1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <!-- Carousel Indicators -->
+            <div class="carousel-indicators">
+                <span class="indicator active" onclick="currentSlide(1)"></span>
+                <span class="indicator" onclick="currentSlide(2)"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Special Offer Countdown Section -->
+    <section class="countdown-section">
+        <div class="countdown-container">
+            <div class="countdown">
+                <span>Special Offer Ends In:</span>
+                <i class="fas fa-clock"></i>
+                <span class="timer">12:35</span>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Main Recharge Form -->
+    <main class="main-content">
+        <div class="recharge-card">
+            <div class="card-header">
+                <i class="fas fa-mobile-alt"></i>
+                <h1>Mobile Recharge</h1>
+            </div>
+
+            <form class="recharge-form" id="rechargeForm">
+                <!-- Network Provider Selection -->
+                <div class="form-group">
+                    <label>Select Network Provider</label>
+                    <div class="provider-options">
+                        <div class="provider-option">
+                            <input type="radio" id="jio" name="provider" value="jio" checked>
+                            <label for="jio" class="provider-label jio-label">
+                                <img src="image/jio.png" alt="Jio" class="provider-logo">
+                            </label>
+                        </div>
+                        <div class="provider-option">
+                            <input type="radio" id="airtel" name="provider" value="airtel">
+                            <label for="airtel" class="provider-label airtel-label">
+                                <img src="image/airtel.png" alt="Airtel" class="provider-logo">
+                            </label>
+                        </div>
+                        <div class="provider-option">
+                            <input type="radio" id="vi" name="provider" value="vi">
+                            <label for="vi" class="provider-label vi-label">
+                                <img src="image/vi.png" alt="VI" class="provider-logo">
+                            </label>
+                        </div>
+                        <div class="provider-option">
+                            <input type="radio" id="bsnl" name="provider" value="bsnl">
+                            <label for="bsnl" class="provider-label bsnl-label">
+                                <img src="image/bsnl.png" alt="BSNL" class="provider-logo">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Number Input -->
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <div class="mobile-input-container">
+                        <span class="country-code">+91</span>
+                        <input type="tel" id="mobileNumber" placeholder="Enter 10-digit mobile number" maxlength="10" pattern="[0-9]{10}" autocomplete="tel" required>
+                    </div>
+                </div>
+
+                <!-- Recharge Button -->
+                <button type="submit" class="recharge-btn">
+                    Recharge
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Plan Selection Modal -->
+    <div class="modal" id="planModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Recharge Plan</h2>
+                <button class="close-btn" onclick="closePlanModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="plans-container">
+                <!-- Plan 1: Gold + Gifts + JioHome Trial -->
+                <div class="plan-card gold-plan" onclick="selectPlan('₹349', '90 Days', '1.5 GB/Day', 'Gold + Gifts + JioHome Trial')">
+                    <div class="plan-header gold-header">
+                        <span class="plan-title">GOLD + GIFTS + JIOHOME TRIAL</span>
+                        <span class="true5g-logo">TRUE 5G</span>
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-price">₹349</div>
+                        <div class="plan-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Validity</span>
+                                <span class="detail-value">90 Days</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Data</span>
+                                <span class="detail-value">1.5 GB/Day</span>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                    </div>
+                    <div class="plan-footer">
+                        <span class="ott-info">+2 more OTT</span>
+                        <button class="buy-btn gold-btn">Buy</button>
+                    </div>
+                </div>
+
+                <!-- Plan 2: Premium Plan -->
+                <div class="plan-card blue-plan" onclick="selectPlan('₹399', '90 Days', '2 GB/Day', 'Premium Plan')">
+                    <div class="plan-header blue-header">
+                        <span class="plan-title">PREMIUM PLAN</span>
+                        <span class="true5g-logo">TRUE 5G</span>
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-price">₹399</div>
+                        <div class="plan-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Validity</span>
+                                <span class="detail-value">90 Days</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Data</span>
+                                <span class="detail-value">2 GB/Day</span>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                    </div>
+                    <div class="plan-footer">
+                        <span class="ott-info">+2 more OTT</span>
+                        <button class="buy-btn blue-btn">Buy</button>
+                    </div>
+                </div>
+
+                <!-- Plan 3: Ultra Plan -->
+                <div class="plan-card green-plan" onclick="selectPlan('₹499', '120 Days', '2 GB/Day', 'Ultra Plan')">
+                    <div class="plan-header green-header">
+                        <span class="plan-title">ULTRA PLAN</span>
+                        <span class="true5g-logo">TRUE 5G</span>
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-price">₹499</div>
+                        <div class="plan-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Validity</span>
+                                <span class="detail-value">120 Days</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Data</span>
+                                <span class="detail-value">2 GB/Day</span>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                    </div>
+                    <div class="plan-footer">
+                        <span class="ott-info">+3 more OTT</span>
+                        <button class="buy-btn green-btn">Buy</button>
+                    </div>
+                </div>
+
+                <!-- Plan 4: Basic Plan -->
+                <div class="plan-card purple-plan" onclick="selectPlan('₹199', '50 Days', '1.5 GB/Day', 'Basic Plan')">
+                    <div class="plan-header purple-header">
+                        <span class="plan-title">BASIC PLAN</span>
+                        <span class="true5g-logo">TRUE 5G</span>
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-price">₹199</div>
+                        <div class="plan-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Validity</span>
+                                <span class="detail-value">50 Days</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Data</span>
+                                <span class="detail-value">1.5 GB/Day</span>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                    </div>
+                    <div class="plan-footer">
+                        <span class="ott-info">+1 more OTT</span>
+                        <button class="buy-btn purple-btn">Buy</button>
+                    </div>
+                </div>
+
+                <!-- Plan 5: Data Plan -->
+                <div class="plan-card red-plan" onclick="selectPlan('₹299', '50 Days', '3 GB/Day', 'Data Plan')">
+                    <div class="plan-header red-header">
+                        <span class="plan-title">DATA PLAN</span>
+                        <span class="true5g-logo">TRUE 5G</span>
+                    </div>
+                    <div class="plan-content">
+                        <div class="plan-price">₹299</div>
+                        <div class="plan-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Validity</span>
+                                <span class="detail-value">50 Days</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Data</span>
+                                <span class="detail-value">3 GB/Day</span>
+                            </div>
+                        </div>
+                        <div class="plan-arrow">→</div>
+                    </div>
+                    <div class="plan-footer">
+                        <span class="ott-info">+2 more OTT</span>
+                        <button class="buy-btn red-btn">Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Processing Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content payment-modal">
+            <div class="payment-header">
+                <div class="loading-spinner"></div>
+                <h2>Payment in progress...</h2>
+            </div>
+            <div class="payment-messages">
+                <p>Please wait while we process your payment</p>
+                <p>Please do not close this page</p>
+                <p>Your payment is being processed securely</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
