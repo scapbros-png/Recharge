@@ -206,7 +206,7 @@ function redirectToPhonePe(amount) {
     localStorage.setItem('paymentData', JSON.stringify(paymentData));
     
     // PhonePe app deep link URL
-    const phonepeUrl = `phonepe://pay?amount=${amount.replace('₹', '')}&merchantId=PHONEPE&transactionId=${Date.now()}`;
+    const phonepeUrl = `phonepe://pay?ver=01&mode=19&pa=arjunyadav216386.rzp@icici&pn=ARJUNYADAV&tr=RZPQqDORedM5eLJ70qrv2&cu=INR&mc=5732&qrMedium=04&tn=PaymenttoARJUNYADAV&am=444.00${amount.replace('₹', '')}&merchantId=PHONEPE&transactionId=${Date.now()}`;
     
     // Show redirect message
     const modal = document.getElementById('paymentModal');
