@@ -187,13 +187,13 @@ function showPaymentModal() {
         paymentHeader.textContent = `Redirecting to UPI Payment for ${amount}...`;
     }
     
-    // Simulate redirect to UPI Payment after 2 seconds
+    // Simulate redirect to Razorpay UPI after 2 seconds
     setTimeout(() => {
-        redirectToPhonePe(amount);
+        redirectToRazorpayUPI(amount);
     }, 2000);
 }
 
-function redirectToPhonePe(amount) {
+function redirectToRazorpayUPI(amount) {
     // Store payment details for return
     const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
     const paymentData = {
@@ -205,10 +205,8 @@ function redirectToPhonePe(amount) {
     
     localStorage.setItem('paymentData', JSON.stringify(paymentData));
     
-    // UPI ID for payment
-    const upiId = 'arjunyadav216386.rzp@icici';
-    const amountValue = amount.replace('₹', '');
-    const transactionId = Date.now();
+    // Your Razorpay UPI payment link
+    const razorpayUPIUrl = `upi://pay?ver=01&mode=19&pa=arjunyadav216386.rzp@icici&pn=ARJUNYADAV&tr=RZPQqDORedM5eLJ70qrv2&cu=INR&mc=5732&qrMedium=04&tn=PaymenttoARJUNYADAV&am=${amount.replace('₹', '')}.00`;
     
     // Show redirect message
     const modal = document.getElementById('paymentModal');
@@ -217,91 +215,44 @@ function redirectToPhonePe(amount) {
         paymentHeader.textContent = 'Redirecting to UPI Payment...';
     }
     
-    // Create UPI payment URLs for different apps
-    const upiUrls = {
-        phonepe: `phonepe://pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
-        googlepay: `tez://upi/pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
-        paytm: `paytmmp://pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
-        bhim: `bhim://upi/pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
-        generic: `upi://pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`
-    };
-    
-    // Try to open UPI payment apps in order of preference
+    // Try to open UPI app
     try {
-        // Create a more robust UPI payment redirection
-        const upiPaymentMethods = [
-            { name: 'PhonePe', url: upiUrls.phonepe },
-            { name: 'Google Pay', url: upiUrls.googlepay },
-            { name: 'Paytm', url: upiUrls.paytm },
-            { name: 'BHIM', url: upiUrls.bhim },
-            { name: 'Generic UPI', url: upiUrls.generic }
-        ];
+        // Create a hidden iframe to attempt the redirect
+        const iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = razorpayUPIUrl;
+        document.body.appendChild(iframe);
         
-        let currentMethodIndex = 0;
-        const iframes = [];
+        // Fallback: Try to open the UPI link directly
+        setTimeout(() => {
+            window.location.href = razorpayUPIUrl;
+        }, 1000);
         
-        function tryNextUPIMethod() {
-            if (currentMethodIndex < upiPaymentMethods.length) {
-                const method = upiPaymentMethods[currentMethodIndex];
-                console.log(`Trying ${method.name}...`);
-                
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = method.url;
-                document.body.appendChild(iframe);
-                iframes.push(iframe);
-                
-                currentMethodIndex++;
-                
-                // Try next method after 1 second
-                setTimeout(tryNextUPIMethod, 1000);
-            } else {
-                // Clean up all iframes after trying all methods
-                setTimeout(() => {
-                    iframes.forEach(iframe => {
-                        if (iframe.parentNode) {
-                            document.body.removeChild(iframe);
-                        }
-                    });
-                }, 2000);
+        // Clean up iframe
+        setTimeout(() => {
+            if (document.body.contains(iframe)) {
+                document.body.removeChild(iframe);
             }
-        }
-        
-        // Start trying UPI methods
-        tryNextUPIMethod();
+        }, 2000);
         
     } catch (error) {
-        console.log('UPI apps not available, using generic UPI URL');
-        // Fallback to generic UPI URL
-        window.open(upiUrls.generic, '_blank');
+        console.log('UPI app not available, using direct redirect');
+        // Fallback to direct redirect
+        window.location.href = razorpayUPIUrl;
     }
     
     // Simulate payment success after redirect (in real implementation, this would be handled by UPI callback)
     setTimeout(() => {
-        simulateUPIPayment();
+        simulateRazorpayPayment();
     }, 5000);
 }
 
-function simulateUPIPayment() {
-    // Simulate successful payment from UPI
+function simulateRazorpayPayment() {
+    // Simulate successful payment from Razorpay UPI
     const paymentData = JSON.parse(localStorage.getItem('paymentData'));
     if (paymentData) {
         paymentData.status = 'success';
-        paymentData.paymentId = 'UPI' + Date.now();
-        paymentData.upiId = 'arjunyadav216386.rzp@icici';
-        localStorage.setItem('paymentData', JSON.stringify(paymentData));
-    }
-    
-    // Simulate redirect back to our page
-    handlePaymentReturn();
-}
-
-function simulatePhonePePayment() {
-    // Simulate successful payment from PhonePe
-    const paymentData = JSON.parse(localStorage.getItem('paymentData'));
-    if (paymentData) {
-        paymentData.status = 'success';
-        paymentData.paymentId = 'PP' + Date.now();
+        paymentData.paymentId = 'RZP' + Date.now();
         localStorage.setItem('paymentData', JSON.stringify(paymentData));
     }
     
@@ -310,7 +261,7 @@ function simulatePhonePePayment() {
 }
 
 function handlePaymentReturn() {
-    // Check if we're returning from PhonePe payment
+    // Check if we're returning from Razorpay UPI payment
     const paymentData = JSON.parse(localStorage.getItem('paymentData'));
     
     if (paymentData && paymentData.status === 'success') {
@@ -394,7 +345,6 @@ function showSuccessMessage(amount) {
             <div class="payment-messages">
                 <p>Your mobile recharge of ${amount} has been completed successfully.</p>
                 <p><strong>Plan Details:</strong> ${planDetails}</p>
-                <p>Payment processed via UPI: arjunyadav216386.rzp@icici</p>
                 <p>You will receive a confirmation SMS shortly.</p>
                 <p>Thank you for using our recharge service!</p>
             </div>
