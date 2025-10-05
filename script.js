@@ -3,21 +3,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
     
-    // Check if returning from PhonePe payment
-    checkPaymentReturn();
 });
 
-function checkPaymentReturn() {
-    // Check if we have payment data indicating a return from PhonePe
-    const paymentData = JSON.parse(localStorage.getItem('paymentData'));
-    
-    if (paymentData && paymentData.status === 'pending') {
-        // We're returning from PhonePe, process the payment
-        setTimeout(() => {
-            handlePaymentReturn();
-        }, 1000);
-    }
-}
 
 // Backup initialization in case DOMContentLoaded doesn't fire
 window.addEventListener('load', function() {
@@ -160,209 +147,21 @@ function selectPlan(price, validity, data, planName) {
         planName: planName
     };
     
-    // Store in localStorage for payment processing
+    // Store in localStorage for reference
     localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
     
+    // Close the plan modal - Razorpay buttons will handle payment
     closePlanModal();
-    showPaymentModal();
-    
-    // Simulate payment processing
-    setTimeout(() => {
-        showSuccessMessage(price);
-    }, 3000);
 }
 
-function showPaymentModal() {
-    const modal = document.getElementById('paymentModal');
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-    
-    // Get selected plan details
-    const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
-    const amount = selectedPlan ? selectedPlan.price : '₹0';
-    
-    // Update payment header with amount
-    const paymentHeader = modal.querySelector('.payment-header h2');
-    if (paymentHeader) {
-        paymentHeader.textContent = `Redirecting to UPI Payment for ${amount}...`;
-    }
-    
-    // Simulate redirect to Razorpay UPI after 2 seconds
-    setTimeout(() => {
-        redirectToRazorpayUPI(amount);
-    }, 2000);
-}
 
-function redirectToRazorpayUPI(amount) {
-    // Store payment details for return
-    const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
-    const paymentData = {
-        amount: amount,
-        plan: selectedPlan,
-        timestamp: new Date().toISOString(),
-        status: 'pending'
-    };
-    
-    localStorage.setItem('paymentData', JSON.stringify(paymentData));
-    
-    // Your Razorpay UPI payment link
-    const razorpayUPIUrl = `upi://pay?ver=01&mode=19&pa=arjunyadav216386.rzp@icici&pn=ARJUNYADAV&tr=RZPQqDORedM5eLJ70qrv2&cu=INR&mc=5732&qrMedium=04&tn=PaymenttoARJUNYADAV&am=${amount.replace('₹', '')}.00`;
-    
-    // Show redirect message
-    const modal = document.getElementById('paymentModal');
-    const paymentHeader = modal.querySelector('.payment-header h2');
-    if (paymentHeader) {
-        paymentHeader.textContent = 'Redirecting to UPI Payment...';
-    }
-    
-    // Try to open UPI app
-    try {
-        // Create a hidden iframe to attempt the redirect
-        const iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.src = razorpayUPIUrl;
-        document.body.appendChild(iframe);
-        
-        // Fallback: Try to open the UPI link directly
-        setTimeout(() => {
-            window.location.href = razorpayUPIUrl;
-        }, 1000);
-        
-        // Clean up iframe
-        setTimeout(() => {
-            if (document.body.contains(iframe)) {
-                document.body.removeChild(iframe);
-            }
-        }, 2000);
-        
-    } catch (error) {
-        console.log('UPI app not available, using direct redirect');
-        // Fallback to direct redirect
-        window.location.href = razorpayUPIUrl;
-    }
-    
-    // Simulate payment success after redirect (in real implementation, this would be handled by UPI callback)
-    setTimeout(() => {
-        simulateRazorpayPayment();
-    }, 5000);
-}
 
-function simulateRazorpayPayment() {
-    // Simulate successful payment from Razorpay UPI
-    const paymentData = JSON.parse(localStorage.getItem('paymentData'));
-    if (paymentData) {
-        paymentData.status = 'success';
-        paymentData.paymentId = 'RZP' + Date.now();
-        localStorage.setItem('paymentData', JSON.stringify(paymentData));
-    }
-    
-    // Simulate redirect back to our page
-    handlePaymentReturn();
-}
 
-function handlePaymentReturn() {
-    // Check if we're returning from Razorpay UPI payment
-    const paymentData = JSON.parse(localStorage.getItem('paymentData'));
-    
-    if (paymentData && paymentData.status === 'success') {
-        // Close payment modal
-        closePaymentModal();
-        
-        // Show success message
-        showSuccessMessage(paymentData.amount);
-        
-        // Clear payment data
-        localStorage.removeItem('paymentData');
-    } else {
-        // Handle payment failure or cancellation
-        handlePaymentFailure();
-    }
-}
 
-function handlePaymentFailure() {
-    closePaymentModal();
-    
-    // Show failure modal
-    const failureModal = document.createElement('div');
-    failureModal.className = 'modal show';
-    failureModal.innerHTML = `
-        <div class="modal-content payment-modal">
-            <div class="payment-header">
-                <div class="error-icon">
-                    <i class="fas fa-times-circle"></i>
-                </div>
-                <h2>Payment Failed</h2>
-            </div>
-            <div class="payment-messages">
-                <p>Your payment could not be processed.</p>
-                <p>Please try again or contact support if the issue persists.</p>
-            </div>
-            <button class="recharge-btn" onclick="closeFailureModal()">Try Again</button>
-        </div>
-    `;
-    
-    document.body.appendChild(failureModal);
-    document.body.style.overflow = 'hidden';
-}
 
-function closeFailureModal() {
-    const failureModal = document.querySelector('.modal.show');
-    if (failureModal) {
-        failureModal.remove();
-    }
-    document.body.style.overflow = 'auto';
-    
-    // Clear any stored payment data
-    localStorage.removeItem('paymentData');
-}
 
-function closePaymentModal() {
-    const modal = document.getElementById('paymentModal');
-    modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
-}
 
-function showSuccessMessage(amount) {
-    closePaymentModal();
-    
-    // Get selected plan details for success message
-    const selectedPlan = JSON.parse(localStorage.getItem('selectedPlan'));
-    const planDetails = selectedPlan ? 
-        `${selectedPlan.planName} - ${selectedPlan.validity} - ${selectedPlan.data}` : 
-        'Selected Plan';
-    
-    // Create success modal
-    const successModal = document.createElement('div');
-    successModal.className = 'modal show';
-    successModal.innerHTML = `
-        <div class="modal-content payment-modal">
-            <div class="payment-header">
-                <div class="success-icon">
-                    <i class="fas fa-check-circle"></i>
-                </div>
-                <h2>Recharge Successful!</h2>
-            </div>
-            <div class="payment-messages">
-                <p>Your mobile recharge of ${amount} has been completed successfully.</p>
-                <p><strong>Plan Details:</strong> ${planDetails}</p>
-                <p>You will receive a confirmation SMS shortly.</p>
-                <p>Thank you for using our recharge service!</p>
-            </div>
-            <button class="recharge-btn" onclick="closeSuccessModal()">Done</button>
-        </div>
-    `;
-    
-    document.body.appendChild(successModal);
-    document.body.style.overflow = 'hidden';
-}
 
-function closeSuccessModal() {
-    const successModal = document.querySelector('.modal.show');
-    if (successModal) {
-        successModal.remove();
-        document.body.style.overflow = 'auto';
-    }
-}
 
 function closeAllModals() {
     const modals = document.querySelectorAll('.modal.show');
