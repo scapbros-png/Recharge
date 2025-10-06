@@ -1599,6 +1599,15 @@ body {
         padding: 1.5rem 1rem;
         margin-top: 1.5rem;
     }
+    
+    .bottom-gif {
+        max-width: 90%;
+        animation: float 4s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
+    }
+    
+    .gif-container {
+        animation: slideInUp 1s ease-out;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1609,5 +1618,66 @@ body {
     
     .bottom-gif {
         border-radius: 8px;
+        max-width: 95%;
+        animation: float 5s ease-in-out infinite, glow 4s ease-in-out infinite alternate;
+        /* Reduce animation intensity on mobile for better performance */
+        transform: translateY(0);
+    }
+    
+    .bottom-gif:hover {
+        transform: scale(1.03) rotate(1deg);
+        /* Lighter hover effect on mobile */
+    }
+    
+    .gif-container {
+        animation: slideInUp 1.2s ease-out;
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+    .gif-section {
+        padding: 0.75rem 0.25rem;
+        margin-top: 0.75rem;
+    }
+    
+    .bottom-gif {
+        max-width: 98%;
+        border-radius: 6px;
+        /* Minimal animations on very small screens */
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .bottom-gif:hover {
+        transform: scale(1.02);
+        /* Very subtle hover on small screens */
+    }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+    .gif-section {
+        padding: 1rem 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .bottom-gif {
+        max-width: 60%;
+        max-height: 200px;
+        object-fit: contain;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .bottom-gif {
+        /* Reduce animations on touch devices for better performance */
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    .bottom-gif:hover {
+        /* Disable hover effects on touch devices */
+        transform: none;
+        animation-play-state: running;
     }
 }
