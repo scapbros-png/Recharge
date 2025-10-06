@@ -1521,9 +1521,10 @@ body {
 }
 
 .gif-container {
-    max-width: 1200px;
+    max-width: 300px;
     margin: 0 auto;
     text-align: center;
+    animation: slideInUp 0.8s ease-out;
 }
 
 .bottom-gif {
@@ -1601,7 +1602,8 @@ body {
     }
     
     .bottom-gif {
-        max-width: 90%;
+        width: 100%;
+        height: auto;
         animation: float 4s ease-in-out infinite, glow 3s ease-in-out infinite alternate;
     }
     
@@ -1618,7 +1620,8 @@ body {
     
     .bottom-gif {
         border-radius: 8px;
-        max-width: 95%;
+        width: 100%;
+        height: auto;
         animation: float 5s ease-in-out infinite, glow 4s ease-in-out infinite alternate;
         /* Reduce animation intensity on mobile for better performance */
         transform: translateY(0);
@@ -1642,7 +1645,8 @@ body {
     }
     
     .bottom-gif {
-        max-width: 98%;
+        width: 100%;
+        height: auto;
         border-radius: 6px;
         /* Minimal animations on very small screens */
         animation: float 6s ease-in-out infinite;
@@ -1662,7 +1666,8 @@ body {
     }
     
     .bottom-gif {
-        max-width: 60%;
+        width: 100%;
+        height: auto;
         max-height: 200px;
         object-fit: contain;
     }
