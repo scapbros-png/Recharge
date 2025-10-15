@@ -922,6 +922,9 @@ body {
     transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
     font-family: 'Arial', sans-serif;
     background: var(--primary);
+    display: inline-block;
+    width: auto;
+    box-sizing: border-box;
 }
 
 .gold-btn {
@@ -952,6 +955,21 @@ body {
 
 .buy-btn:focus {
     outline: 3px solid rgba(95,37,159,0.12);
+}
+
+/* Ensure buy buttons are visible and tappable on small screens */
+@media (max-width: 480px) {
+    .buy-btn {
+        display: block;
+        width: 100%;
+        padding: 0.9rem 1rem;
+        font-size: 1rem;
+        border-radius: 8px;
+    }
+
+    .plan-footer {
+        padding: 0.75rem 1rem;
+    }
 }
 
 /* PhonePe-style blue for Buy Now buttons */
