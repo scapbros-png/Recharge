@@ -5,6 +5,11 @@
     box-sizing: border-box;
 }
 
+:root {
+    --primary: #5F259F; /* PhonePe purple */
+    --primary-hover: #4a1f7a;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
@@ -679,7 +684,7 @@ body {
 
 .recharge-btn {
     width: 100%;
-    background: #5F259F;
+    background: var(--primary);
     color: white;
     border: none;
     padding: 1rem;
@@ -687,11 +692,12 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.2s ease, transform 0.12s ease;
 }
 
 .recharge-btn:hover {
-    background: #4a1f7a;
+    background: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
 /* Modal Styles */
@@ -913,8 +919,9 @@ body {
     font-weight: 600;
     font-size: 0.8rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.2s ease;
     font-family: 'Arial', sans-serif;
+    background: var(--primary);
 }
 
 .gold-btn {
@@ -938,8 +945,32 @@ body {
 }
 
 .buy-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+}
+
+.buy-btn:focus {
+    outline: 3px solid rgba(95,37,159,0.12);
+}
+
+/* PhonePe-style blue for Buy Now buttons */
+.plan-actions .buy-btn {
+    background: var(--primary);
+    color: #fff;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: background 0.2s ease, transform 0.12s ease;
+}
+
+.plan-actions .buy-btn:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.plan-actions .buy-btn:focus {
+    outline: 3px solid rgba(95,37,159,0.15);
 }
 
 /* Exact match styling for image design */
@@ -1138,7 +1169,7 @@ body {
 
 .plan-recharge-btn {
     width: 100%;
-    background: #5F259F;
+    background: var(--primary);
     color: white;
     border: none;
     padding: 1rem;
@@ -1146,11 +1177,12 @@ body {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: background 0.2s ease, transform 0.12s ease;
 }
 
 .plan-recharge-btn:hover {
-    background: #4a1f7a;
+    background: var(--primary-hover);
+    transform: translateY(-2px);
 }
 
 /* Payment Modal */

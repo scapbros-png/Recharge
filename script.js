@@ -481,8 +481,40 @@ function startTimerManually() {
 // Export functions for global access
 window.closePlanModal = closePlanModal;
 window.selectPlan = selectPlan;
+// Stub for closeSuccessModal (not implemented elsewhere) to avoid undefined reference
+function closeSuccessModal() {
+    // Placeholder - if you implement a success modal later, wire it here
+    const successModal = document.getElementById('successModal');
+    if (successModal) {
+        successModal.classList.remove('show');
+    }
+}
 window.closeSuccessModal = closeSuccessModal;
 window.showNotification = showNotification;
 window.changeSlide = changeSlide;
 window.currentSlide = currentSlide;
 window.startTimerManually = startTimerManually;
+
+/**
+ * Helper used by plan Buy Now buttons.
+ * Stores selection and attempts to open a payment URL via known payment button id.
+ */
+function selectPlanAndPay(price, planName, paymentButtonId) {
+    // Save selected plan details
+    const selectedPlan = { price, planName, paymentButtonId };
+    localStorage.setItem('selectedPlan', JSON.stringify(selectedPlan));
+
+    showNotification(`Selected ${planName} (${price}). Redirecting to payment...`, 'info');
+
+    // If a Razorpay payment button id is provided, attempt to open the payment page URL in a new tab as a fallback.
+    if (paymentButtonId) {
+        // Razorpay payment buttons usually need their script; as a fallback, open the SMEPay link or show notification.
+        const fallbackUrl = `https://checkout.razorpay.com/v1/payment-button/js?payment_button_id=${encodeURIComponent(paymentButtonId)}`;
+        // Attempt to open in a new tab
+        window.open(fallbackUrl, '_blank');
+    } else {
+        showNotification('Payment link not available. Please try again.', 'warning');
+    }
+}
+window.selectPlanAndPay = selectPlanAndPay;
+// Removed accidental HTML injection that broke script parsing
